@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Read Later On Owncloud</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="bookmarkTitleLabel">Title</string>
+    <string name="bookmarkTitleHint">new bookmark title</string>
+    <string name="bookmarkURLLabel">Bookmark URL</string>
+    <string name="bookmarkURLHint">new bookmark url</string>
+    <string name="bookmarkCategoriesLabel">Categories</string>
+    <string name="bookmarkCategoriesHint">categories</string>
+    <string name="bookmarkDescriptionLabel">Description</string>
+    <string name="bookmarkDescriptionHint">description</string>
+    <string name="saveBookmarkButtonText">save for later</string>
+    <string name="owncloudURLLabel">Owncloud URL</string>
+    <string name="owncloudURLHint">owncloud url</string>
+    <string name="owncloudUserLabel">Owncloud user</string>
+    <string name="owncloudUserHint">owncloud user</string>
+    <string name="owncloudPasswordLabel">Owncloud password</string>
+    <string name="owncloudPasswordHint">password</string>
+    <string name="defaultCategoryLabel">Default category</string>
+    <string name="defaultCategoryHint">default category</string>
+    <string name="saveSettingsButtonText">save settings</string>
+
+</resources>
