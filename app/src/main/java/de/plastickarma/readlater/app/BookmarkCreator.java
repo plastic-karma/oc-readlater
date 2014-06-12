@@ -1,11 +1,14 @@
 package de.plastickarma.readlater.app;
 
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
+import android.util.Log;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -35,14 +38,9 @@ public final class BookmarkCreator {
         final Bookmark bookmark) {
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Notification notification = new Notification.Builder(context)
-                .setAutoCancel(true)
-                .setContentTitle("saving bookmark...")
-                .setContentText("Saving bookmark to owncloud instance")
-                .setSmallIcon(android.R.drawable.stat_sys_upload)
-                .build();
 
-        notificationManager.notify(0, notification);
+        notificationManager.notify(0, createNotification(
+            context, "Saving bookmark", "Bookmark will be saved to owncloud...", android.R.drawable.stat_sys_upload));
         Ion.with(context, makeUrl(baseUrl, ADD_BM_LOCATION))
                 .setBodyParameter("user", owncloudUser)
                 .setBodyParameter("password", owncloudPass)
@@ -52,13 +50,24 @@ public final class BookmarkCreator {
                 .setCallback(new FutureCallback<String>() {
                     @Override
                     public void onCompleted(Exception e, String result) {
+                        //TODO Refactor createMessageOnException and error handling in general
                         final AlertDialog exceptionMessage = createMessageOnException(e, result, context);
                         if (exceptionMessage != null) {
+                            Log.e("Bad Response", "Error while saving bookmark", e);
+                            notificationManager.notify(0, createNotification(context, "Saving bookmark",
+                                    "Error while communicating with owncloud: " + e.getMessage(), android.R.drawable.stat_notify_error));
                             exceptionMessage.show();
                             return;
                         }
-                        //TODO check if request token is found
+
                         final Matcher matcher = REQUEST_TOKEN_PATTERN.matcher(result);
+                        if (!matcher.find()) {
+                            Log.e("Bad Response", "Could not parse request token from response");
+                            Log.e("Bad Response", result);
+                            notificationManager.notify(0, createNotification(
+                                    context, "Saving bookmark", "Bad response from owncloud instance", android.R.drawable.stat_sys_upload));
+                            return;
+                        }
                         final String requestToken = matcher.group(1);
 
                         Ion.with(context, makeUrl(baseUrl, EDIT_BM_LOCATION))
@@ -72,21 +81,17 @@ public final class BookmarkCreator {
                                 .setCallback(new FutureCallback<String>() {
                                     @Override
                                     public void onCompleted(Exception e, String result) {
-                                        Notification.Builder doneNotification = new Notification.Builder(context)
-                                                .setAutoCancel(true)
-                                                .setSmallIcon(android.R.drawable.stat_sys_upload_done);
+
                                         final AlertDialog exceptionMessage = createMessageOnException(e, result, context);
                                         if (exceptionMessage != null) {
-                                            doneNotification
-                                                    .setContentTitle("Error while saving bookmark")
-                                                    .setContentText(e.getMessage());
+                                            Log.e("Bad Response", "Error while saving bookmark", e);
+                                            notificationManager.notify(0, createNotification(context, "Saving bookmark",
+                                                    "Error while communicating with owncloud: " + e.getMessage(), android.R.drawable.stat_notify_error));
                                             exceptionMessage.show();
                                         } else {
-                                            doneNotification
-                                                    .setContentTitle("Saving bookmark complete")
-                                                    .setContentText("Successfully uploaded bookmark");
+                                            notificationManager.notify(0, createNotification(context, "Saving bookmark",
+                                                    "Bookmark successfully saved", android.R.drawable.stat_sys_upload_done));
                                         }
-                                        notificationManager.notify(0, doneNotification.build());
                                         //TODO evaluate response from owncloud
                                     }
                                 });
@@ -107,6 +112,17 @@ public final class BookmarkCreator {
             return ab.create();
         }
         return null;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private static Notification createNotification(
+            final Context context, final String title, final String message, final int icon) {
+        return new Notification.Builder(context)
+                .setAutoCancel(true)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setSmallIcon(icon)
+                .build();
     }
 
     private static String makeUrl(String base, String location) {
