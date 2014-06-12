@@ -1,6 +1,6 @@
 oc-readlater
 ============
-These are my first steps in Android. This app saves bookmarks to the bookmarks app on your owncloud instance.
+These are my first steps in Android. This app saves bookmarks to the bookmarks app on your owncloud instance. Feedback, (comments, suggestions, insults) welcome!
 
 ### Praise
 - HTTP communications made possible with [ion](https://github.com/koush/ion)
