@@ -42,6 +42,8 @@ public final class Settings extends ActionBarActivity {
         saveSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                // TODO: Check if location is owncloud instance
+                // TODO: Check if owncloud has bookmark app
                 final SharedPreferences settings = getSettings(v.getContext());
                 final SharedPreferences.Editor settingsEditor = settings.edit();
                 settingsEditor.putString(URL_KEY, ActivityHelper.getNullCheckedText(owncloudURL));
