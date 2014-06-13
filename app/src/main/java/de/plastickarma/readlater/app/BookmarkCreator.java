@@ -18,8 +18,10 @@ import java.util.regex.Pattern;
 public final class BookmarkCreator {
 
 
-    private static String ADD_BM_LOCATION = "index.php?redirect_url=%2Fowncloud%2Findex.php%2Fapps%2Fbookmarks%2FaddBm.php";
-    private static String EDIT_BM_LOCATION = "index.php/apps/bookmarks/ajax/editBookmark.php";
+    private static final String ADD_BM_LOCATION =
+            "index.php?redirect_url=%2Fowncloud%2Findex.php%2Fapps%2Fbookmarks%2FaddBm.php";
+    private static final String EDIT_BM_LOCATION =
+            "index.php/apps/bookmarks/ajax/editBookmark.php";
 
     private static Pattern REQUEST_TOKEN_PATTERN = Pattern.compile("name=\"requesttoken\"\\s*value=\"(.*)\"");
 
@@ -36,11 +38,16 @@ public final class BookmarkCreator {
         final String owncloudUser,
         final String owncloudPass,
         final Bookmark bookmark) {
+
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-
         notificationManager.notify(0, createNotification(
-            context, "Saving bookmark", "Bookmark will be saved to owncloud...", android.R.drawable.stat_sys_upload));
+                context,
+                context.getString(R.string.savingBookmarkNotTitle),
+                context.getString(R.string.savingBookmarkNotText),
+                android.R.drawable.stat_sys_upload)
+        );
+
         Ion.with(context, makeUrl(baseUrl, ADD_BM_LOCATION))
                 .setBodyParameter("user", owncloudUser)
                 .setBodyParameter("password", owncloudPass)
@@ -50,22 +57,24 @@ public final class BookmarkCreator {
                 .setCallback(new FutureCallback<String>() {
                     @Override
                     public void onCompleted(Exception e, String result) {
-                        //TODO Refactor createMessageOnException and error handling in general
-                        final AlertDialog exceptionMessage = createMessageOnException(e, result, context);
-                        if (exceptionMessage != null) {
-                            Log.e("Bad Response", "Error while saving bookmark", e);
-                            notificationManager.notify(0, createNotification(context, "Saving bookmark",
-                                    "Error while communicating with owncloud: " + e.getMessage(), android.R.drawable.stat_notify_error));
-                            exceptionMessage.show();
+                        if (e != null) {
+                            signalError(
+                                    context,
+                                    context.getString(R.string.badResponseTitle),
+                                    context.getString(R.string.savingBookmarkErrorText),
+                                    e);
+                            Log.d("Bad Response", "HTTP result: " + result);
                             return;
                         }
 
                         final Matcher matcher = REQUEST_TOKEN_PATTERN.matcher(result);
                         if (!matcher.find()) {
-                            Log.e("Bad Response", "Could not parse request token from response");
-                            Log.e("Bad Response", result);
-                            notificationManager.notify(0, createNotification(
-                                    context, "Saving bookmark", "Bad response from owncloud instance", android.R.drawable.stat_sys_upload));
+                            signalError(
+                                    context,
+                                    context.getString(R.string.badResponseTitle),
+                                    context.getString(R.string.savingBookmarkBadResponseText),
+                                    null);
+                            Log.d("Bad Response", result);
                             return;
                         }
                         final String requestToken = matcher.group(1);
@@ -81,37 +90,26 @@ public final class BookmarkCreator {
                                 .setCallback(new FutureCallback<String>() {
                                     @Override
                                     public void onCompleted(Exception e, String result) {
-
-                                        final AlertDialog exceptionMessage = createMessageOnException(e, result, context);
-                                        if (exceptionMessage != null) {
-                                            Log.e("Bad Response", "Error while saving bookmark", e);
-                                            notificationManager.notify(0, createNotification(context, "Saving bookmark",
-                                                    "Error while communicating with owncloud: " + e.getMessage(), android.R.drawable.stat_notify_error));
-                                            exceptionMessage.show();
-                                        } else {
-                                            notificationManager.notify(0, createNotification(context, "Saving bookmark",
-                                                    "Bookmark successfully saved", android.R.drawable.stat_sys_upload_done));
+                                        if (e != null) {
+                                            signalError(
+                                                    context,
+                                                    context.getString(R.string.badResponseTitle),
+                                                    context.getString(R.string.savingBookmarkErrorText),
+                                                    e);
+                                            Log.d("Bad Response", "HTTP result: " + result);
+                                            return;
                                         }
+                                        notificationManager.notify(0, createNotification(
+                                                        context,
+                                                        context.getString(R.string.savingBookmarkNotTitle),
+                                                        context.getString(R.string.savingBookmarkDoneNotText),
+                                                        android.R.drawable.stat_sys_upload_done)
+                                        );
                                         //TODO evaluate response from owncloud
                                     }
                                 });
                     }
                 });
-    }
-
-    private static AlertDialog createMessageOnException(final Exception e, final String result, final Context context) {
-        if (e != null || result == null) {
-            AlertDialog.Builder ab = new AlertDialog.Builder(context);
-            ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(final DialogInterface dialog, final int which) {
-
-                }
-            });
-            ab.setTitle("Something went wrong").setMessage(e.getMessage());
-            return ab.create();
-        }
-        return null;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -123,6 +121,40 @@ public final class BookmarkCreator {
                 .setContentText(message)
                 .setSmallIcon(icon)
                 .build();
+    }
+
+    private static void signalError(
+            final Context context,
+            final String title,
+            final String message,
+            final Exception exception) {
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (exception != null) {
+            Log.e(title, message, exception);
+        } else {
+            Log.e(title, message);
+        }
+
+        notificationManager.notify(
+                0,
+                createNotification(
+                        context,
+                        title,
+                        exception != null ? exception.getMessage() : message,
+                        android.R.drawable.stat_notify_error)
+        );
+        AlertDialog.Builder ab = new AlertDialog.Builder(context);
+        ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialog, final int which) {
+
+            }
+        });
+        ab.setTitle("Something went wrong").setMessage(exception != null ? exception.getMessage() : message);
+        ab.create().show();
     }
 
     private static String makeUrl(String base, String location) {
