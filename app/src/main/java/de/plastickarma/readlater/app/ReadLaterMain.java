@@ -1,5 +1,6 @@
 package de.plastickarma.readlater.app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -8,6 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -37,8 +41,10 @@ public final class ReadLaterMain extends ActionBarActivity {
                 titleTextInput.setText(bookmark.getDescription());
                 urlTextInput.setText(bookmark.getUrl());
             }
+            String category = getCategories(text, this);
+            categoriesTextInput.setText(category);
         }
-        categoriesTextInput.setText(Settings.getOwncloudDefaultCategory(this));
+
 
         final Button saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +64,32 @@ public final class ReadLaterMain extends ActionBarActivity {
                 );
             }
         });
+    }
+
+    public static String getCategories(String text, Context ctx) {
+
+        final List<CategoryMapping> categoryMappings = CategoryMapping.getCategoryMappings(ctx);
+        final List<String> categories = new ArrayList<String>();
+        for (CategoryMapping m : categoryMappings) {
+            if (text.contains(m.getText())) {
+                categories.add(m.getCategories());
+            }
+        }
+        if (categories.isEmpty()) {
+            categories.add(Settings.getOwncloudDefaultCategory(ctx));
+        }
+        return implode(categories);
+    }
+
+    private static String implode(List<String> l) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < l.size(); i++) {
+            result.append(l.get(0));
+            if (i < l.size() - 1) {
+                result.append(',');
+            }
+        }
+        return result.toString();
     }
 
     @Override
