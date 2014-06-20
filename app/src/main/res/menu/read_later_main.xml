@@ -2,8 +2,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.plastickarma.readlater.app.ReadLaterMain" >
+    <item android:id="@+id/action_categories"
+          android:title="@string/action_categories"
+          android:orderInCategory="100"
+          android:icon="@android:drawable/ic_menu_agenda"
+          app:showAsAction="ifRoom" />
     <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="collapseActionView" />
+          android:icon="@android:drawable/ic_menu_manage"
+          android:title="@string/action_settings"
+          android:orderInCategory="200"
+          app:showAsAction="ifRoom" />
 </menu>

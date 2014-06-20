@@ -31,8 +31,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ReadLaterMain" />
         </activity>
+        <activity
+            android:name="de.plastickarma.readlater.app.CategoryMappingActivity"
+            android:label="@string/title_activity_category_mapping"
+            android:parentActivityName="de.plastickarma.readlater.app.ReadLaterMain" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ReadLaterMain" />
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
-
 </manifest>

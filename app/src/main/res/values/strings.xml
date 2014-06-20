@@ -28,5 +28,11 @@
     <string name="savingBookmarkDoneNotText">Bookmark successfully saved</string>
     <string name="savingBookmarkErrorText">Error while saving bookmark</string>
     <string name="savingBookmarkBadResponseText">Could not interpret response from owncloud</string>
+    <string name="title_activity_category_mapping">Categories</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_categories">Categories</string>
+    <string name="urlPatternHint">URL pattern</string>
+    <string name="mappingCategoriesHint">Categories</string>
+    <string name="saveCategoryMappings">save mapping</string>
 
 </resources>

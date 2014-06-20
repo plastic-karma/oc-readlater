@@ -14,7 +14,7 @@ import android.widget.EditText;
  */
 public final class Settings extends ActionBarActivity {
 
-    private final static String SHARED_PREF_KEY = "de.plastickarma.readlater.shared";
+    final static String SHARED_PREF_KEY = "de.plastickarma.readlater.shared";
 
     private final static String URL_KEY  = "url";
 
