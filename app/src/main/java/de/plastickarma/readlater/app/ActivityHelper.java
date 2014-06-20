@@ -10,7 +10,8 @@ public final class ActivityHelper {
     private ActivityHelper() { }
 
     /**
-     * Gets the text from an EditText. Returns null, if no text is set.
+     * Gets the text from an EditText.
+     * @return The text from the given EditText or the empty string, if no text is set.
      */
     static String getNullCheckedText(final EditText text) {
         return text.getText() == null ? "" : text.getText().toString();

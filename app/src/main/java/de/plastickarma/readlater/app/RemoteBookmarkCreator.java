@@ -15,7 +15,10 @@ import com.koushikdutta.ion.Ion;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class BookmarkCreator {
+/**
+ * Helper class to create bookmark on owncloud.
+ */
+public final class RemoteBookmarkCreator {
 
 
     private static final String ADD_BM_LOCATION =

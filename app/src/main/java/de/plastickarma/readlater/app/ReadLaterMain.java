@@ -55,7 +55,7 @@ public final class ReadLaterMain extends ActionBarActivity {
                         ActivityHelper.getNullCheckedText(titleTextInput),
                         ActivityHelper.getNullCheckedText(descriptionTextInput),
                         ActivityHelper.getNullCheckedText(categoriesTextInput));
-                BookmarkCreator.createRemoteBookmark(
+                RemoteBookmarkCreator.createRemoteBookmark(
                         v.getContext(),
                         Settings.getOwncloudURL(v.getContext()),
                         Settings.getOwncloudUser(v.getContext()),

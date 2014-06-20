@@ -1,5 +1,8 @@
 package de.plastickarma.readlater.app;
 
+/**
+ * Class, that represents a bookmark.
+ */
 public final class Bookmark {
 
     private final String url;
