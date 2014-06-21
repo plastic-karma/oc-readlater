@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="de.plastickarma.readlater.app.CategoryMappingActivity" >
+    <item android:id="@+id/action_add_mapping"
+          android:title="Add"
+          android:orderInCategory="100"
+          android:icon="@android:drawable/ic_menu_add"
+          app:showAsAction="always" />
+    <item android:id="@+id/action_settings"
+          android:icon="@android:drawable/ic_menu_manage"
+          android:title="@string/action_settings"
+          android:orderInCategory="200"
+          app:showAsAction="ifRoom" />
+
+
+</menu>
