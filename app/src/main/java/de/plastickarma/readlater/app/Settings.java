@@ -33,12 +33,29 @@ public final class Settings extends ActionBarActivity {
         final EditText owncloudPassword = (EditText) findViewById(R.id.owncloudPasswordTextInput);
         final EditText owncloudDefaultCategory = (EditText) findViewById(R.id.owncloudDefaultCategoryTextInput);
 
+
+
+        final Button saveSettingsButton = (Button) findViewById(R.id.saveSettingsButton);
+        saveSettingsButton.setEnabled(false);
+
+        new RequireNonEmptyTextWatcher(owncloudURL, owncloudUser, owncloudPassword) {
+
+            @Override
+            public void allAreNonEmpty() {
+                saveSettingsButton.setEnabled(true);
+            }
+
+            @Override
+            public void someAreEmpty() {
+                saveSettingsButton.setEnabled(false);
+            }
+        };
+
         owncloudURL.setText(getOwncloudURL(this));
         owncloudUser.setText(getOwncloudUser(this));
         owncloudPassword.setText(getOwncloudPassword(this));
         owncloudDefaultCategory.setText(getOwncloudDefaultCategory(this));
 
-        final Button saveSettingsButton = (Button) findViewById(R.id.saveSettingsButton);
         saveSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
