@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 
 /**
- * Fragment to add a category mapping
+ * Fragment to add a category mapping.
  */
 public final class AddMappingFragment extends Fragment {
 

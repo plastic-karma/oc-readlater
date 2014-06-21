@@ -9,6 +9,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Utility class to signal if a list of EditTexts all contain some text.
+ */
 public abstract class RequireNonEmptyTextWatcher {
 
     private final List<EditText> toBeWatched;
@@ -41,8 +44,14 @@ public abstract class RequireNonEmptyTextWatcher {
         }
     }
 
+    /**
+     * Signals, that all watched EditTexts contain text.
+     */
     public abstract void allAreNonEmpty();
 
+    /**
+     * Signals, that at least one watched EditText does not contain any text.
+     */
     public abstract void someAreEmpty();
 
     private void checkNotify() {

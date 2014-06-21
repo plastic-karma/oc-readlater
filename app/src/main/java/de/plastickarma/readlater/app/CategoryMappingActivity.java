@@ -9,7 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class CategoryMappingActivity extends ActionBarActivity {
+/**
+ * Activity to manage category mappings.
+ */
+public final class CategoryMappingActivity extends ActionBarActivity {
 
     public static final String CATEGORY_MAPPING_PREFS = "categoryMappings";
 

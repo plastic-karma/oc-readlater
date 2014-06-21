@@ -33,7 +33,7 @@ public final class CategoryMapping {
         return text;
     }
 
-    public static List<CategoryMapping> fromJson(final String json) throws JSONException {
+    private static List<CategoryMapping> fromJson(final String json) throws JSONException {
         List<CategoryMapping> mappings = new ArrayList<CategoryMapping>();
         final JSONArray fromJSON = new JSONArray(json);
         for (int i = 0; i < fromJSON.length(); i++) {
@@ -48,7 +48,7 @@ public final class CategoryMapping {
         return mappings;
     }
 
-    public static String toJSON(List<CategoryMapping> categories) throws JSONException {
+    private static String toJSON(List<CategoryMapping> categories) throws JSONException {
         JSONArray result = new JSONArray();
         for(CategoryMapping mapping : categories) {
             JSONObject jsonMapping = new JSONObject();
@@ -60,12 +60,18 @@ public final class CategoryMapping {
         return result.toString();
     }
 
+    /**
+     * Adds the given mapping to the other persisted mappings.
+     */
     public static void addCategoryMapping(Context ctx, CategoryMapping mapping) {
         final List<CategoryMapping> mappings = getCategoryMappings(ctx);
         mappings.add(mapping);
         saveCategoryMappings(ctx, mappings);
     }
 
+    /**
+     * Removes the given mapping from the other persisted mappings.
+     */
     public static void removeCategoryMapping(Context ctx, CategoryMapping mapping) {
         final List<CategoryMapping> mappings = getCategoryMappings(ctx);
         mappings.remove(mapping);
@@ -87,6 +93,9 @@ public final class CategoryMapping {
         sharedPrefEdit.commit();
     }
 
+    /**
+     * Returns all category mappings from the shared preferences.
+     */
     public static List<CategoryMapping> getCategoryMappings(Context ctx) {
         List<CategoryMapping> mappings = new ArrayList<CategoryMapping>();
 

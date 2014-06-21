@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
-
+/**
+ * Adapter, that displays a category mapping in a ListView.
+ */
 public final class CategoryMappingAdapter extends BaseAdapter implements View.OnClickListener {
 
     private final List<CategoryMapping> mappings;
