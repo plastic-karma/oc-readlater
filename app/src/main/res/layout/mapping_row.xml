@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:weightSum="1">
 
     <TextView
         android:layout_width="wrap_content"
         android:text="dummy"
-        android:layout_height="wrap_content"
+        android:layout_height="50sp"
+        android:layout_marginTop="15sp"
+        android:layout_marginBottom="15sp"
         android:id="@+id/mapping_row_text"
         android:textSize="22sp"
         android:typeface="normal"/>
 
     <ImageButton
         android:layout_width="wrap_content"
-        android:layout_height="25sp"
-        android:layout_marginTop="2dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15sp"
+        android:layout_marginBottom="15sp"
         android:id="@+id/mapping_row_delete_button"
-        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:visibility="visible"
         android:background="@android:color/transparent"/>

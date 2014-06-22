@@ -10,8 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -29,6 +31,24 @@ public final class ReadLaterMain extends ActionBarActivity {
         final EditText descriptionTextInput = (EditText) findViewById(R.id.bookmarkDescriptionInput);
         final EditText categoriesTextInput = (EditText) findViewById(R.id.bookmarkCategoriesInput);
 
+        final View.OnFocusChangeListener autoCategoryInserter = new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(final View v, final boolean hasFocus) {
+                if (!hasFocus) {
+                    String categories = getCategories(
+                            ActivityHelper.getNullCheckedText(urlTextInput) +
+                            ActivityHelper.getNullCheckedText(titleTextInput) +
+                            ActivityHelper.getNullCheckedText(descriptionTextInput),
+                            v.getContext()
+                    );
+                    categoriesTextInput.setText(categories);
+                }
+            }
+        };
+        titleTextInput.setOnFocusChangeListener(autoCategoryInserter);
+        urlTextInput.setOnFocusChangeListener(autoCategoryInserter);
+        descriptionTextInput.setOnFocusChangeListener((autoCategoryInserter));
+
         // Try to fill in the text fields if we come from a share intent.
         final Intent intent = this.getIntent();
         final String action = intent.getAction();
@@ -41,8 +61,8 @@ public final class ReadLaterMain extends ActionBarActivity {
                 titleTextInput.setText(bookmark.getDescription());
                 urlTextInput.setText(bookmark.getUrl());
             }
-            String category = getCategories(text, this);
-            categoriesTextInput.setText(category);
+            String categories = getCategories(text, this);
+            categoriesTextInput.setText(categories);
         }
 
 
@@ -69,7 +89,7 @@ public final class ReadLaterMain extends ActionBarActivity {
     public static String getCategories(String text, Context ctx) {
 
         final List<CategoryMapping> categoryMappings = CategoryMapping.getCategoryMappings(ctx);
-        final List<String> categories = new ArrayList<String>();
+        final Set<String> categories = new HashSet<String>();
         for (CategoryMapping m : categoryMappings) {
             if (text.contains(m.getText())) {
                 categories.add(m.getCategories());
@@ -81,11 +101,12 @@ public final class ReadLaterMain extends ActionBarActivity {
         return implode(categories);
     }
 
-    private static String implode(List<String> l) {
+    private static String implode(Set<String> s) {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < l.size(); i++) {
-            result.append(l.get(0));
-            if (i < l.size() - 1) {
+        final Iterator<String> iterator = s.iterator();
+        while (iterator.hasNext()) {
+            result.append(iterator.next());
+            if (iterator.hasNext()) {
                 result.append(',');
             }
         }

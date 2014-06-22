@@ -33,12 +33,14 @@ public abstract class RequireNonEmptyTextWatcher {
                 @Override
                 public void afterTextChanged(final Editable s) {
                     if (s.length() > 0) {
-                        currentlyNonEmpty.add(text);
+                        if(currentlyNonEmpty.add(text)) {
+                            doNotify();
+                        }
                     } else {
-                        currentlyNonEmpty.remove(text);
+                        if (currentlyNonEmpty.remove(text)) {
+                            doNotify();
+                        }
                     }
-                    checkNotify();
-
                 }
             });
         }
@@ -54,7 +56,7 @@ public abstract class RequireNonEmptyTextWatcher {
      */
     public abstract void someAreEmpty();
 
-    private void checkNotify() {
+    private void doNotify() {
         if (currentlyNonEmpty.containsAll(toBeWatched)) {
             this.allAreNonEmpty();
         } else {
