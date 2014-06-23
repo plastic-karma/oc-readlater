@@ -35,4 +35,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
     compile 'com.koushikdutta.ion:ion:1.2.4'
     compile 'com.android.support:appcompat-v7:19.+'
+    compile 'com.google.guava:guava:17.0'
 }

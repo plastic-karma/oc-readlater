@@ -1,6 +1,5 @@
 package de.plastickarma.readlater.app;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -9,9 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import com.google.common.base.Joiner;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -21,16 +20,21 @@ import java.util.Set;
  */
 public final class ReadLaterMain extends ActionBarActivity {
 
+    private List<CategoryMapping> categoryMappings;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_later_main);
+        // Load mappings once, so we don't have to look them up all the time
+        categoryMappings = CategoryMapping.getCategoryMappings(this);
 
         final EditText titleTextInput = (EditText) findViewById(R.id.bookmarkTitleInput);
         final EditText urlTextInput = (EditText) findViewById(R.id.bookmarkURLInput);
         final EditText descriptionTextInput = (EditText) findViewById(R.id.bookmarkDescriptionInput);
         final EditText categoriesTextInput = (EditText) findViewById(R.id.bookmarkCategoriesInput);
 
+        // Focus listener to set categories, when leaving the text field.
         final View.OnFocusChangeListener autoCategoryInserter = new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(final View v, final boolean hasFocus) {
@@ -38,8 +42,7 @@ public final class ReadLaterMain extends ActionBarActivity {
                     String categories = getCategories(
                             ActivityHelper.getNullCheckedText(urlTextInput) +
                             ActivityHelper.getNullCheckedText(titleTextInput) +
-                            ActivityHelper.getNullCheckedText(descriptionTextInput),
-                            v.getContext()
+                            ActivityHelper.getNullCheckedText(descriptionTextInput)
                     );
                     categoriesTextInput.setText(categories);
                 }
@@ -61,7 +64,7 @@ public final class ReadLaterMain extends ActionBarActivity {
                 titleTextInput.setText(bookmark.getDescription());
                 urlTextInput.setText(bookmark.getUrl());
             }
-            String categories = getCategories(text, this);
+            String categories = getCategories(text);
             categoriesTextInput.setText(categories);
         }
 
@@ -86,31 +89,21 @@ public final class ReadLaterMain extends ActionBarActivity {
         });
     }
 
-    public static String getCategories(String text, Context ctx) {
-
-        final List<CategoryMapping> categoryMappings = CategoryMapping.getCategoryMappings(ctx);
+    /**
+     * Determines the categories from the given text
+     * @return A string, in which the categories are comma-separated
+     */
+    private String getCategories(String text) {
         final Set<String> categories = new HashSet<String>();
-        for (CategoryMapping m : categoryMappings) {
+        for (CategoryMapping m : this.categoryMappings) {
             if (text.contains(m.getText())) {
                 categories.add(m.getCategories());
             }
         }
         if (categories.isEmpty()) {
-            categories.add(Settings.getOwncloudDefaultCategory(ctx));
+            categories.add(Settings.getOwncloudDefaultCategory(this));
         }
-        return implode(categories);
-    }
-
-    private static String implode(Set<String> s) {
-        StringBuilder result = new StringBuilder();
-        final Iterator<String> iterator = s.iterator();
-        while (iterator.hasNext()) {
-            result.append(iterator.next());
-            if (iterator.hasNext()) {
-                result.append(',');
-            }
-        }
-        return result.toString();
+        return Joiner.on(',').join(categories);
     }
 
     @Override
