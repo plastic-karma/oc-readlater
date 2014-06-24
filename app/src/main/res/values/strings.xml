@@ -34,5 +34,6 @@
     <string name="urlPatternHint">URL pattern</string>
     <string name="mappingCategoriesHint">Categories</string>
     <string name="saveCategoryMappings">save mapping</string>
+    <string name="buttonTextWhileSaving">saving…</string>
 
 </resources>

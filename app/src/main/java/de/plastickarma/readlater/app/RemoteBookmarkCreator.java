@@ -11,6 +11,8 @@ import android.os.Build;
 import android.util.Log;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +42,8 @@ public final class RemoteBookmarkCreator {
         final String baseUrl,
         final String owncloudUser,
         final String owncloudPass,
-        final Bookmark bookmark) {
+        final Bookmark bookmark,
+        final Runnable onAfterCreateBookmark) {
 
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -67,6 +70,7 @@ public final class RemoteBookmarkCreator {
                                     context.getString(R.string.savingBookmarkErrorText),
                                     e);
                             Log.d("Bad Response", "HTTP result: " + result);
+                            onAfterCreateBookmark.run();
                             return;
                         }
 
@@ -78,6 +82,7 @@ public final class RemoteBookmarkCreator {
                                     context.getString(R.string.savingBookmarkBadResponseText),
                                     null);
                             Log.d("Bad Response", result);
+                            onAfterCreateBookmark.run();
                             return;
                         }
                         final String requestToken = matcher.group(1);
@@ -87,32 +92,56 @@ public final class RemoteBookmarkCreator {
                                 .setBodyParameter("record_id", "")
                                 .setBodyParameter("description", bookmark.getDescription())
                                 .setBodyParameter("title", bookmark.getTitle())
-                                .setBodyParameter("url", bookmark.getUrl())
+                                .setBodyParameter("url", correctURLifNecessary(bookmark))
                                 .setBodyParameter("item[tags][]", bookmark.getCategories())
                                 .asString()
                                 .setCallback(new FutureCallback<String>() {
                                     @Override
                                     public void onCompleted(Exception e, String result) {
-                                        if (e != null) {
-                                            signalError(
-                                                    context,
-                                                    context.getString(R.string.badResponseTitle),
-                                                    context.getString(R.string.savingBookmarkErrorText),
-                                                    e);
-                                            Log.d("Bad Response", "HTTP result: " + result);
-                                            return;
-                                        }
-                                        notificationManager.notify(0, createNotification(
+                                        try {
+                                            if (e != null || !owncloudResponseIsOk(result)) {
+                                                signalError(
                                                         context,
-                                                        context.getString(R.string.savingBookmarkNotTitle),
-                                                        context.getString(R.string.savingBookmarkDoneNotText),
-                                                        android.R.drawable.stat_sys_upload_done)
-                                        );
-                                        //TODO evaluate response from owncloud
+                                                        context.getString(R.string.badResponseTitle),
+                                                        context.getString(R.string.savingBookmarkErrorText),
+                                                        e);
+                                                Log.d("Bad Response", "HTTP result: " + result);
+                                                return;
+                                            }
+                                            notificationManager.notify(0, createNotification(
+                                                            context,
+                                                            context.getString(R.string.savingBookmarkNotTitle),
+                                                            context.getString(R.string.savingBookmarkDoneNotText),
+                                                            android.R.drawable.stat_sys_upload_done)
+                                            );
+                                        } finally {
+                                            onAfterCreateBookmark.run();
+                                        }
                                     }
                                 });
                     }
                 });
+    }
+
+    private static boolean owncloudResponseIsOk(final String httpResult) {
+        try {
+            JSONObject jsonResult = new JSONObject(httpResult);
+            return jsonResult.has("status") && jsonResult.getString("status").equalsIgnoreCase("success");
+        } catch (JSONException e) {
+            Log.e("Bad Response", "Cannot create json from response: " + httpResult, e);
+            return false;
+        }
+
+
+    }
+
+    private static String correctURLifNecessary(final Bookmark bookmark) {
+        final String url = bookmark.getUrl();
+        if (url.startsWith("http")) {
+            return url;
+        } else {
+            return "http://" + url;
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)

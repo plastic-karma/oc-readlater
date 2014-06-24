@@ -73,6 +73,9 @@ public final class ReadLaterMain extends ActionBarActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                final Button b = (Button) v;
+                b.setEnabled(false);
+                b.setText(getString(R.string.buttonTextWhileSaving));
                 Bookmark bm = new Bookmark(
                         ActivityHelper.getNullCheckedText(urlTextInput),
                         ActivityHelper.getNullCheckedText(titleTextInput),
@@ -83,7 +86,14 @@ public final class ReadLaterMain extends ActionBarActivity {
                         Settings.getOwncloudURL(v.getContext()),
                         Settings.getOwncloudUser(v.getContext()),
                         Settings.getOwncloudPassword(v.getContext()),
-                        bm
+                        bm,
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                b.setEnabled(true);
+                                b.setText(getString(R.string.saveBookmarkButtonText));
+                            }
+                        }
                 );
             }
         });
