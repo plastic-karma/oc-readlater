@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +31,6 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("SAVEDINSTANCE", "calling onCreate " + savedInstanceState);
         setContentView(R.layout.activity_read_later_main);
         // Load mappings once, so we don't have to look them up all the time
         categoryMappings = CategoryMapping.getCategoryMappings(this);
