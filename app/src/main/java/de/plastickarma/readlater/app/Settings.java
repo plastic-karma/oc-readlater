@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -37,42 +35,30 @@ public final class Settings extends ActionBarActivity {
         final EditText owncloudDefaultCategory = (EditText) findViewById(R.id.owncloudDefaultCategoryTextInput);
         final CheckBox enableNotificationsBox = (CheckBox) findViewById(R.id.enableNotifications);
 
-        final Button saveSettingsButton = (Button) findViewById(R.id.saveSettingsButton);
-        saveSettingsButton.setEnabled(false);
-
-        new RequireNonEmptyTextWatcher(owncloudURL, owncloudUser, owncloudPassword) {
-
-            @Override
-            public void allAreNonEmpty() {
-                saveSettingsButton.setEnabled(true);
-            }
-
-            @Override
-            public void someAreEmpty() {
-                saveSettingsButton.setEnabled(false);
-            }
-        };
-
         owncloudURL.setText(getOwncloudURL(this));
         owncloudUser.setText(getOwncloudUser(this));
         owncloudPassword.setText(getOwncloudPassword(this));
         owncloudDefaultCategory.setText(getOwncloudDefaultCategory(this));
+        enableNotificationsBox.setChecked(notificationsAreEnabled(this));
+    }
 
-        saveSettingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                // TODO: Check if location is owncloud instance
-                // TODO: Check if owncloud has bookmark app
-                final SharedPreferences settings = getSettings(v.getContext());
-                final SharedPreferences.Editor settingsEditor = settings.edit();
-                settingsEditor.putString(URL_KEY, ActivityHelper.getNullCheckedText(owncloudURL));
-                settingsEditor.putString(USER_KEY, ActivityHelper.getNullCheckedText(owncloudUser));
-                settingsEditor.putString(PASSWORD_KEY, ActivityHelper.getNullCheckedText(owncloudPassword));
-                settingsEditor.putString(DEFAULT_CAT_KEY, ActivityHelper.getNullCheckedText(owncloudDefaultCategory));
-                settingsEditor.putBoolean(ENABLE_NOT_KEY, enableNotificationsBox.isChecked());
-                settingsEditor.commit();
-            }
-        });
+    @Override
+    protected void onPause() {
+        super.onPause();
+        final EditText owncloudURL = (EditText) findViewById(R.id.owncloudURLTextInput);
+        final EditText owncloudUser = (EditText) findViewById(R.id.owncloudUserTextInput);
+        final EditText owncloudPassword = (EditText) findViewById(R.id.owncloudPasswordTextInput);
+        final EditText owncloudDefaultCategory = (EditText) findViewById(R.id.owncloudDefaultCategoryTextInput);
+        final CheckBox enableNotificationsBox = (CheckBox) findViewById(R.id.enableNotifications);
+
+        final SharedPreferences settings = getSettings(this);
+        final SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putString(URL_KEY, ActivityHelper.getNullCheckedText(owncloudURL));
+        settingsEditor.putString(USER_KEY, ActivityHelper.getNullCheckedText(owncloudUser));
+        settingsEditor.putString(PASSWORD_KEY, ActivityHelper.getNullCheckedText(owncloudPassword));
+        settingsEditor.putString(DEFAULT_CAT_KEY, ActivityHelper.getNullCheckedText(owncloudDefaultCategory));
+        settingsEditor.putBoolean(ENABLE_NOT_KEY, enableNotificationsBox.isChecked());
+        settingsEditor.commit();
     }
 
     private static SharedPreferences getSettings(final Context context) {

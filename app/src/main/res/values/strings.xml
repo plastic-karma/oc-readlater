@@ -21,7 +21,6 @@
     <string name="owncloudPasswordHint">password</string>
     <string name="defaultCategoryLabel">Default category</string>
     <string name="defaultCategoryHint">default category</string>
-    <string name="saveSettingsButtonText">save settings</string>
     <string name="savingBookmarkNotTitle">Saving bookmark</string>
     <string name="savingBookmarkNotText">Bookmark will be saved to owncloud…</string>
     <string name="badResponseTitle">Bad Response</string>
