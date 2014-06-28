@@ -36,5 +36,6 @@
     <string name="saveCategoryMappings">save mapping</string>
     <string name="buttonTextWhileSaving">saving…</string>
     <string name="clearBookmarkButton">clear</string>
+    <string name="enableNotificationsCheckBox">enable notifications</string>
 
 </resources>

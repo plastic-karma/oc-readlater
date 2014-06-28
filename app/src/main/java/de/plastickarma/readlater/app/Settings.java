@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 
@@ -24,6 +25,8 @@ public final class Settings extends ActionBarActivity {
 
     private final static String DEFAULT_CAT_KEY = "defaultCat";
 
+    private final static String ENABLE_NOT_KEY = "enableNotifications";
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,8 +35,7 @@ public final class Settings extends ActionBarActivity {
         final EditText owncloudUser = (EditText) findViewById(R.id.owncloudUserTextInput);
         final EditText owncloudPassword = (EditText) findViewById(R.id.owncloudPasswordTextInput);
         final EditText owncloudDefaultCategory = (EditText) findViewById(R.id.owncloudDefaultCategoryTextInput);
-
-
+        final CheckBox enableNotificationsBox = (CheckBox) findViewById(R.id.enableNotifications);
 
         final Button saveSettingsButton = (Button) findViewById(R.id.saveSettingsButton);
         saveSettingsButton.setEnabled(false);
@@ -67,6 +69,7 @@ public final class Settings extends ActionBarActivity {
                 settingsEditor.putString(USER_KEY, ActivityHelper.getNullCheckedText(owncloudUser));
                 settingsEditor.putString(PASSWORD_KEY, ActivityHelper.getNullCheckedText(owncloudPassword));
                 settingsEditor.putString(DEFAULT_CAT_KEY, ActivityHelper.getNullCheckedText(owncloudDefaultCategory));
+                settingsEditor.putBoolean(ENABLE_NOT_KEY, enableNotificationsBox.isChecked());
                 settingsEditor.commit();
             }
         });
@@ -89,5 +92,9 @@ public final class Settings extends ActionBarActivity {
     }
     public static String getOwncloudDefaultCategory(final Context context) {
         return getSettings(context).getString(DEFAULT_CAT_KEY, "");
+    }
+
+    public static boolean notificationsAreEnabled(final Context context) {
+        return getSettings(context).getBoolean(ENABLE_NOT_KEY, true);
     }
 }

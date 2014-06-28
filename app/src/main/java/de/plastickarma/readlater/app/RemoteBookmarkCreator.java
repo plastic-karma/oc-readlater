@@ -43,16 +43,19 @@ public final class RemoteBookmarkCreator {
         final String owncloudUser,
         final String owncloudPass,
         final Bookmark bookmark,
+        final boolean enableNotifications,
         final Runnable onAfterCreateBookmark) {
 
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0, createNotification(
-                context,
-                context.getString(R.string.savingBookmarkNotTitle),
-                context.getString(R.string.savingBookmarkNotText),
-                android.R.drawable.stat_sys_upload)
-        );
+        if (enableNotifications) {
+            notificationManager.notify(0, createNotification(
+                            context,
+                            context.getString(R.string.savingBookmarkNotTitle),
+                            context.getString(R.string.savingBookmarkNotText),
+                            android.R.drawable.stat_sys_upload)
+            );
+        }
 
         Ion.with(context, makeUrl(baseUrl, ADD_BM_LOCATION))
                 .setBodyParameter("user", owncloudUser)
@@ -68,6 +71,7 @@ public final class RemoteBookmarkCreator {
                                     context,
                                     context.getString(R.string.badResponseTitle),
                                     context.getString(R.string.savingBookmarkErrorText),
+                                    enableNotifications,
                                     e);
                             Log.d("Bad Response", "HTTP result: " + result);
                             onAfterCreateBookmark.run();
@@ -80,6 +84,7 @@ public final class RemoteBookmarkCreator {
                                     context,
                                     context.getString(R.string.badResponseTitle),
                                     context.getString(R.string.savingBookmarkBadResponseText),
+                                    enableNotifications,
                                     null);
                             Log.d("Bad Response", result);
                             onAfterCreateBookmark.run();
@@ -104,16 +109,19 @@ public final class RemoteBookmarkCreator {
                                                         context,
                                                         context.getString(R.string.badResponseTitle),
                                                         context.getString(R.string.savingBookmarkErrorText),
+                                                        enableNotifications,
                                                         e);
                                                 Log.d("Bad Response", "HTTP result: " + result);
                                                 return;
                                             }
-                                            notificationManager.notify(0, createNotification(
-                                                            context,
-                                                            context.getString(R.string.savingBookmarkNotTitle),
-                                                            context.getString(R.string.savingBookmarkDoneNotText),
-                                                            android.R.drawable.stat_sys_upload_done)
-                                            );
+                                            if (enableNotifications) {
+                                                notificationManager.notify(0, createNotification(
+                                                                context,
+                                                                context.getString(R.string.savingBookmarkNotTitle),
+                                                                context.getString(R.string.savingBookmarkDoneNotText),
+                                                                android.R.drawable.stat_sys_upload_done)
+                                                );
+                                            }
                                         } finally {
                                             onAfterCreateBookmark.run();
                                         }
@@ -159,6 +167,7 @@ public final class RemoteBookmarkCreator {
             final Context context,
             final String title,
             final String message,
+            final boolean enableNotifications,
             final Exception exception) {
 
         NotificationManager notificationManager =
@@ -170,14 +179,16 @@ public final class RemoteBookmarkCreator {
             Log.e(title, message);
         }
 
-        notificationManager.notify(
-                0,
-                createNotification(
-                        context,
-                        title,
-                        exception != null ? exception.getMessage() : message,
-                        android.R.drawable.stat_notify_error)
-        );
+        if (enableNotifications) {
+            notificationManager.notify(
+                    0,
+                    createNotification(
+                            context,
+                            title,
+                            exception != null ? exception.getMessage() : message,
+                            android.R.drawable.stat_notify_error)
+            );
+        }
         AlertDialog.Builder ab = new AlertDialog.Builder(context);
         ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override

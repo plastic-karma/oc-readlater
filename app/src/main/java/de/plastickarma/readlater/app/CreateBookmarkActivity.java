@@ -102,6 +102,7 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
                         Settings.getOwncloudUser(v.getContext()),
                         Settings.getOwncloudPassword(v.getContext()),
                         bm,
+                        Settings.notificationsAreEnabled(CreateBookmarkActivity.this),
                         new Runnable() {
                             @Override
                             public void run() {

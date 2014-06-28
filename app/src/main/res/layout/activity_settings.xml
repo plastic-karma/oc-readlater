@@ -82,14 +82,26 @@
         android:layout_marginTop="5dp"
         android:layout_alignParentRight="true"/>
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enableNotificationsCheckBox"
+        android:layout_marginTop="10dp"
+        android:id="@+id/enableNotifications"
+        android:layout_below="@+id/owncloudDefaultCategoryTextInput"
+        android:layout_alignParentLeft="true"
+        android:checked="true"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="@string/saveSettingsButtonText"
         android:id="@+id/saveSettingsButton"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/owncloudDefaultCategoryTextInput"
+        android:layout_below="@+id/enableNotifications"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignRight="@+id/owncloudDefaultCategoryTextInput"/>
+
+
 
 </RelativeLayout>
