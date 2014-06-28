@@ -11,18 +11,25 @@ import android.widget.ListView;
 /**
  * Fragment to see all category mappings.
  */
-public final class MappingsFragment extends ListFragment {
+public final class CategoryMappingsFragment extends ListFragment {
 
+    private final CategoryMappingHandler categoryMappingHandler;
 
-    public MappingsFragment() {
+    /**
+     * Creates a new {@link CategoryMappingsFragment}.
+     * @param categoryMappingHandler Handler for CRUD-like events of category mappings.
+     */
+    public CategoryMappingsFragment(final CategoryMappingHandler categoryMappingHandler) {
+        this.categoryMappingHandler = categoryMappingHandler;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setListAdapter(new CategoryMappingAdapter(
+        setListAdapter(new CategoryMappingListItemAdapter(
                 this.getActivity(),
+                this.categoryMappingHandler,
                 CategoryMapping.getCategoryMappings(this.getActivity()))
         );
     }

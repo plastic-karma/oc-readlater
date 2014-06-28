@@ -11,17 +11,31 @@
         android:layout_marginTop="15sp"
         android:layout_marginBottom="15sp"
         android:id="@+id/mapping_row_text"
-        android:textSize="22sp"
+        android:textSize="18sp"
         android:typeface="normal"/>
 
     <ImageButton
+        android:id="@+id/mapping_row_edit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:background="@android:color/transparent"
         android:layout_marginTop="15sp"
         android:layout_marginBottom="15sp"
-        android:id="@+id/mapping_row_delete_button"
         android:layout_alignParentRight="true"
+        android:layout_marginRight="50sp"
+        android:clickable="true"/>
+
+    <ImageButton
+        android:id="@+id/mapping_row_delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="visible"
-        android:background="@android:color/transparent"/>
+        android:background="@android:color/transparent"
+        android:layout_marginTop="15sp"
+        android:layout_marginBottom="15sp"
+        android:layout_alignParentRight="true"
+        android:clickable="true"/>
+
 
 </RelativeLayout>

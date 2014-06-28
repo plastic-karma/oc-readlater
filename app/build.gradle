@@ -21,6 +21,13 @@ android {
         targetSdkVersion 16
         versionCode 1
         versionName "1.0"
+
+        testPackageName "de.plastickarma.readlater.app"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+        testHandleProfiling true
+        testFunctionalTest true
+
+
     }
     buildTypes {
         release {

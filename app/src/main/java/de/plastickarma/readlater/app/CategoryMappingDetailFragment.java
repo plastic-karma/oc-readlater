@@ -2,8 +2,6 @@ package de.plastickarma.readlater.app;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +10,34 @@ import android.widget.EditText;
 
 
 /**
- * Fragment to add a category mapping.
+ * Fragment to edit details of a  category mapping.
  */
-public final class AddMappingFragment extends Fragment {
+public final class CategoryMappingDetailFragment extends Fragment {
 
-    public AddMappingFragment() {
+    private final CategoryMappingHandler categoryMappingHandler;
+    private final CategoryMapping mapping;
+    private Runnable onSaveHook;
+
+    /**
+     * Created a new {@link CategoryMappingDetailFragment}.
+     * @param categoryMappingHandler Handler to handle category mapping CRUD-like events.
+     * @param mapping Category mapping, that shall be displayed. Can be <code>null</code>.
+     */
+    public CategoryMappingDetailFragment(
+            final CategoryMappingHandler categoryMappingHandler,
+            final CategoryMapping mapping) {
+        this.categoryMappingHandler = categoryMappingHandler;
+        this.mapping = mapping;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+    }
+
+    public void setOnSaveHook(final Runnable onSaveHook) {
+        this.onSaveHook = onSaveHook;
     }
 
     @Override
@@ -48,23 +64,20 @@ public final class AddMappingFragment extends Fragment {
             }
         };
 
+        if (mapping != null) {
+            bookmarkCategories.setText(mapping.getCategories());
+            bookmarkPattern.setText(mapping.getText());
+        }
 
         saveMappingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-
-                CategoryMapping.addCategoryMapping(
-                        getActivity(),
-                        new CategoryMapping(
-                            ActivityHelper.getNullCheckedText(bookmarkPattern),
-                            ActivityHelper.getNullCheckedText(bookmarkCategories))
-                );
-
-                // Close this fragment
-                final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.container, new MappingsFragment());
-                fragmentTransaction.commit();
+                if (onSaveHook != null) {
+                    onSaveHook.run();
+                }
+                categoryMappingHandler.handleCreateMapping(new CategoryMapping(
+                        ActivityHelper.getNullCheckedText(bookmarkPattern),
+                        ActivityHelper.getNullCheckedText(bookmarkCategories)));
             }
         });
         return rootView;

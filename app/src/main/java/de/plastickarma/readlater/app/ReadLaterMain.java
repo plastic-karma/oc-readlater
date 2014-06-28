@@ -61,7 +61,7 @@ public final class ReadLaterMain extends ActionBarActivity {
             if (bookmark == null) {
                 urlTextInput.setText(text);
             } else {
-                titleTextInput.setText(bookmark.getDescription());
+                titleTextInput.setText(bookmark.getTitle());
                 urlTextInput.setText(bookmark.getUrl());
             }
             String categories = getCategories(text);

@@ -13,14 +13,25 @@ import java.util.List;
 /**
  * Adapter, that displays a category mapping in a ListView.
  */
-public final class CategoryMappingAdapter extends BaseAdapter implements View.OnClickListener {
+public final class CategoryMappingListItemAdapter extends BaseAdapter {
 
     private final List<CategoryMapping> mappings;
     private final Context context;
+    private final CategoryMappingHandler categoryMappingHandler;
 
-    public CategoryMappingAdapter(final Context context, List<CategoryMapping> mappings) {
+    /**
+     * Creates a new {@link CategoryMappingListItemAdapter}.
+     * @param context Context, in which this adapter is created.
+     * @param categoryMappingHandler Handler for CRUD-like events of category mappings.
+     * @param mappings Category mappings, that shall be displayed.
+     */
+    public CategoryMappingListItemAdapter(
+            final Context context,
+            final CategoryMappingHandler categoryMappingHandler,
+            final List<CategoryMapping> mappings) {
         this.context = context;
         this.mappings = mappings;
+        this.categoryMappingHandler = categoryMappingHandler;
     }
 
     @Override
@@ -40,7 +51,7 @@ public final class CategoryMappingAdapter extends BaseAdapter implements View.On
 
     @Override
     public View getView(final int position, final View convertView, final ViewGroup parent) {
-        CategoryMapping mapping = this.mappings.get(position);
+        final CategoryMapping mapping = this.mappings.get(position);
         final View currentView;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
@@ -54,21 +65,25 @@ public final class CategoryMappingAdapter extends BaseAdapter implements View.On
         text.setText(mapping.getText() + " → " + mapping.getCategories());
 
         ImageButton removeButton = (ImageButton) currentView.findViewById(R.id.mapping_row_delete_button);
-        removeButton.setFocusableInTouchMode(false);
-        removeButton.setFocusable(false);
-        removeButton.setOnClickListener(this);
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mappings.remove(mapping);
+                CategoryMapping.removeCategoryMapping(v.getContext(), mapping);
+                notifyDataSetChanged();
+            }
+        });
         removeButton.setImageResource(android.R.drawable.ic_menu_delete);
-        removeButton.setTag(mapping);
+
+        ImageButton editButton = (ImageButton) currentView.findViewById(R.id.mapping_row_edit_button);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                categoryMappingHandler.handleEditMapping(mapping);
+            }
+        });
+        editButton.setImageResource(android.R.drawable.ic_menu_edit);
 
         return currentView;
-    }
-
-    @Override
-    public void onClick(final View v) {
-        CategoryMapping mapping = (CategoryMapping) v.getTag();
-        mappings.remove(mapping);
-        CategoryMapping.removeCategoryMapping(v.getContext(), mapping);
-        notifyDataSetChanged();
-
     }
 }
