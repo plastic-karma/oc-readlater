@@ -1,94 +1,101 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="de.plastickarma.readlater.app.CreateBookmarkActivity">
 
-    <TextView
-        android:text="@string/bookmarkTitleLabel"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/bookmarkTitle"/>
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        >
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bookmarkTitleInput"
-        android:hint="@string/bookmarkTitleHint"
-        android:layout_below="@id/bookmarkTitle"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentRight="true"
-        android:inputType="text"/>
+        <TextView
+            android:id="@+id/bookmarkTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bookmarkTitleLabel"/>
 
-    <TextView
-        android:text="@string/bookmarkURLLabel"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/bookmarkTitleInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bookmarkURL"/>
+        <EditText
+            android:id="@+id/bookmarkTitleInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/bookmarkTitle"
+            android:layout_marginTop="5dp"
+            android:hint="@string/bookmarkTitleHint"
+            android:inputType="text"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bookmarkURLInput"
-        android:hint="@string/bookmarkURLHint"
-        android:layout_below="@id/bookmarkURL"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentRight="true"
-        android:inputType="textUri"/>
+        <TextView
+            android:id="@+id/bookmarkURL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bookmarkTitleInput"
+            android:layout_marginTop="10dp"
+            android:text="@string/bookmarkURLLabel"/>
 
-    <TextView
-        android:text="@string/bookmarkCategoriesLabel"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/bookmarkURLInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bookmarkCategories"/>
+        <EditText
+            android:id="@+id/bookmarkURLInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/bookmarkURL"
+            android:layout_marginTop="5dp"
+            android:hint="@string/bookmarkURLHint"
+            android:inputType="textUri"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bookmarkCategoriesInput"
-        android:hint="@string/bookmarkCategoriesHint"
-        android:layout_below="@id/bookmarkCategories"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentRight="true"
-        android:inputType="text"/>
+        <TextView
+            android:id="@+id/bookmarkCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bookmarkURLInput"
+            android:layout_marginTop="10dp"
+            android:text="@string/bookmarkCategoriesLabel"/>
 
-    <TextView
-        android:text="@string/bookmarkDescriptionLabel"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/bookmarkCategoriesInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bookmarkDescription"/>
+        <EditText
+            android:id="@+id/bookmarkCategoriesInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/bookmarkCategories"
+            android:layout_marginTop="5dp"
+            android:hint="@string/bookmarkCategoriesHint"
+            android:inputType="text"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bookmarkDescriptionInput"
-        android:hint="@string/bookmarkDescriptionHint"
-        android:layout_below="@id/bookmarkDescription"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentRight="true"
-        android:inputType="text"/>
+        <TextView
+            android:id="@+id/bookmarkDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bookmarkCategoriesInput"
+            android:layout_marginTop="10dp"
+            android:text="@string/bookmarkDescriptionLabel"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/clearBookmarkButton"
-        android:id="@+id/clearButton"
-        android:layout_below="@+id/bookmarkDescriptionInput"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"/>
+        <EditText
+            android:id="@+id/bookmarkDescriptionInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/bookmarkDescription"
+            android:layout_marginTop="5dp"
+            android:hint="@string/bookmarkDescriptionHint"
+            android:inputType="text"/>
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/bookmarkDescriptionInput"
+            android:text="@string/clearBookmarkButton"/>
+
+    </RelativeLayout>
+</ScrollView>

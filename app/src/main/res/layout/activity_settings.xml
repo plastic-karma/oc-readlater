@@ -1,95 +1,102 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="de.plastickarma.readlater.app.Settings">
 
-    <TextView
-        android:text="@string/owncloudURLLabel"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/owncloudURLTitle"/>
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/owncloudURLTextInput"
-        android:hint="@string/owncloudURLHint"
-        android:layout_below="@id/owncloudURLTitle"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
-        android:inputType="textUri"
-        android:layout_alignParentRight="true"/>
+        <TextView
+            android:id="@+id/owncloudURLTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/owncloudURLLabel"/>
 
-    <TextView
-        android:text="@string/owncloudUserLabel"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/owncloudURLTextInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/owncloudUser"/>
+        <EditText
+            android:id="@+id/owncloudURLTextInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/owncloudURLTitle"
+            android:layout_marginTop="5dp"
+            android:hint="@string/owncloudURLHint"
+            android:inputType="textUri"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/owncloudUserTextInput"
-        android:hint="@string/owncloudUserHint"
-        android:layout_below="@id/owncloudUser"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentRight="true"
-        android:inputType="text"/>
+        <TextView
+            android:id="@+id/owncloudUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/owncloudURLTextInput"
+            android:layout_marginTop="10dp"
+            android:text="@string/owncloudUserLabel"/>
 
-    <TextView
-        android:text="@string/owncloudPasswordLabel"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/owncloudUserTextInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/owncloudPassword"/>
+        <EditText
+            android:id="@+id/owncloudUserTextInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/owncloudUser"
+            android:layout_marginTop="5dp"
+            android:hint="@string/owncloudUserHint"
+            android:inputType="text"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/owncloudPasswordTextInput"
-        android:hint="@string/owncloudPasswordHint"
-        android:layout_below="@id/owncloudPassword"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentRight="true"
-        android:inputType="textPassword"/>
+        <TextView
+            android:id="@+id/owncloudPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/owncloudUserTextInput"
+            android:layout_marginTop="10dp"
+            android:text="@string/owncloudPasswordLabel"/>
 
-    <TextView
-        android:text="@string/defaultCategoryLabel"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/owncloudPasswordTextInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/owncloudDefaultCategory"/>
+        <EditText
+            android:id="@+id/owncloudPasswordTextInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/owncloudPassword"
+            android:layout_marginTop="5dp"
+            android:hint="@string/owncloudPasswordHint"
+            android:inputType="textPassword"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/owncloudDefaultCategoryTextInput"
-        android:hint="@string/defaultCategoryHint"
-        android:inputType="text"
-        android:layout_below="@id/owncloudDefaultCategory"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentRight="true"/>
+        <TextView
+            android:id="@+id/owncloudDefaultCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/owncloudPasswordTextInput"
+            android:layout_marginTop="10dp"
+            android:text="@string/defaultCategoryLabel"/>
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/enableNotificationsCheckBox"
-        android:layout_marginTop="10dp"
-        android:id="@+id/enableNotifications"
-        android:layout_below="@+id/owncloudDefaultCategoryTextInput"
-        android:layout_alignParentLeft="true"
-        android:checked="true"
-        android:textSize="18sp"/>
-</RelativeLayout>
+        <EditText
+            android:id="@+id/owncloudDefaultCategoryTextInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/owncloudDefaultCategory"
+            android:layout_marginTop="5dp"
+            android:hint="@string/defaultCategoryHint"
+            android:inputType="text"/>
+
+        <CheckBox
+            android:id="@+id/enableNotifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/owncloudDefaultCategoryTextInput"
+            android:layout_marginTop="10dp"
+            android:checked="true"
+            android:text="@string/enableNotificationsCheckBox"
+            android:textSize="18sp"/>
+    </RelativeLayout>
+
+</ScrollView>

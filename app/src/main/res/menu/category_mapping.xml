@@ -12,6 +12,4 @@
           android:title="@string/action_settings"
           android:orderInCategory="200"
           app:showAsAction="never" />
-
-
 </menu>
