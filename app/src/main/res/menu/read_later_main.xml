@@ -2,6 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.plastickarma.readlater.app.CreateBookmarkActivity" >
+    <item android:id="@+id/action_save_bookmark"
+          android:title="@string/saveBookmarkButtonText"
+          android:orderInCategory="100"
+          android:icon="@android:drawable/ic_menu_save"
+          app:showAsAction="always" />
     <item android:id="@+id/action_categories"
           android:title="@string/action_categories"
           android:orderInCategory="100"

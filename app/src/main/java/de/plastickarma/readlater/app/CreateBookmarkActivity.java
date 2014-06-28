@@ -83,37 +83,6 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
             categoriesTextInput.setText(pref.getString(SAVED_CATEGORIES_KEY, ""));
         }
 
-
-        final Button saveButton = (Button) findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                final Button b = (Button) v;
-                b.setEnabled(false);
-                b.setText(getString(R.string.buttonTextWhileSaving));
-                Bookmark bm = new Bookmark(
-                        ActivityHelper.getNullCheckedText(urlTextInput),
-                        ActivityHelper.getNullCheckedText(titleTextInput),
-                        ActivityHelper.getNullCheckedText(descriptionTextInput),
-                        ActivityHelper.getNullCheckedText(categoriesTextInput));
-                RemoteBookmarkCreator.createRemoteBookmark(
-                        v.getContext(),
-                        Settings.getOwncloudURL(v.getContext()),
-                        Settings.getOwncloudUser(v.getContext()),
-                        Settings.getOwncloudPassword(v.getContext()),
-                        bm,
-                        Settings.notificationsAreEnabled(CreateBookmarkActivity.this),
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                b.setEnabled(true);
-                                b.setText(getString(R.string.saveBookmarkButtonText));
-                                clearInputFields();
-                            }
-                        }
-                );
-            }
-        });
         final Button clearButton = (Button) findViewById(R.id.clearButton);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,6 +151,33 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
             Intent intent = new Intent(this, CategoryMappingActivity.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.action_save_bookmark) {
+            item.setEnabled(false);
+            final EditText titleTextInput = (EditText) findViewById(R.id.bookmarkTitleInput);
+            final EditText urlTextInput = (EditText) findViewById(R.id.bookmarkURLInput);
+            final EditText descriptionTextInput = (EditText) findViewById(R.id.bookmarkDescriptionInput);
+            final EditText categoriesTextInput = (EditText) findViewById(R.id.bookmarkCategoriesInput);
+
+            Bookmark bm = new Bookmark(
+                    ActivityHelper.getNullCheckedText(urlTextInput),
+                    ActivityHelper.getNullCheckedText(titleTextInput),
+                    ActivityHelper.getNullCheckedText(descriptionTextInput),
+                    ActivityHelper.getNullCheckedText(categoriesTextInput));
+            RemoteBookmarkCreator.createRemoteBookmark(
+                    this,
+                    Settings.getOwncloudURL(this),
+                    Settings.getOwncloudUser(this),
+                    Settings.getOwncloudPassword(this),
+                    bm,
+                    Settings.notificationsAreEnabled(CreateBookmarkActivity.this),
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            item.setEnabled(true);
+                            clearInputFields();
+                        }
+                    }
+            );
         }
         return super.onOptionsItemSelected(item);
     }
