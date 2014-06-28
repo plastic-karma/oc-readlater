@@ -6,7 +6,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="de.plastickarma.readlater.app.ReadLaterMain">
+    tools:context="de.plastickarma.readlater.app.CreateBookmarkActivity">
 
     <TextView
         android:text="@string/bookmarkTitleLabel"
@@ -90,6 +90,14 @@
         android:layout_marginTop="10dp"
         android:layout_below="@id/bookmarkDescriptionInput"
         android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/clearButton"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/clearBookmarkButton"
+        android:id="@+id/clearButton"
+        android:layout_alignTop="@+id/saveButton"
         android:layout_alignParentRight="true"/>
 
 </RelativeLayout>

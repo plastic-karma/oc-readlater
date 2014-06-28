@@ -35,5 +35,6 @@
     <string name="mappingCategoriesHint">Categories</string>
     <string name="saveCategoryMappings">save mapping</string>
     <string name="buttonTextWhileSaving">saving…</string>
+    <string name="clearBookmarkButton">clear</string>
 
 </resources>

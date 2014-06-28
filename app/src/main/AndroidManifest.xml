@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="de.plastickarma.readlater.app.ReadLaterMain"
+            android:name=".CreateBookmarkActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
         <activity
             android:name="de.plastickarma.readlater.app.Settings"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="de.plastickarma.readlater.app.ReadLaterMain" >
+            android:parentActivityName=".CreateBookmarkActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ReadLaterMain" />
@@ -34,7 +34,7 @@
         <activity
             android:name="de.plastickarma.readlater.app.CategoryMappingActivity"
             android:label="@string/title_activity_category_mapping"
-            android:parentActivityName="de.plastickarma.readlater.app.ReadLaterMain" >
+            android:parentActivityName=".CreateBookmarkActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ReadLaterMain" />

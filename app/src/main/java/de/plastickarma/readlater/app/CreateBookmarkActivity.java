@@ -1,8 +1,10 @@
 package de.plastickarma.readlater.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,13 +20,19 @@ import java.util.Set;
 /**
  * Main Activity to add a bookmark.
  */
-public final class ReadLaterMain extends ActionBarActivity {
+public final class CreateBookmarkActivity extends ActionBarActivity {
+
+    private static final String SAVED_TITLE_KEY = "savedTitle";
+    private static final String SAVED_URL_KEY = "savedURL";
+    private static final String SAVED_DESCRIPTION_KEY = "savedDescription";
+    private static final String SAVED_CATEGORIES_KEY = "savedCategories";
 
     private List<CategoryMapping> categoryMappings;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("SAVEDINSTANCE", "calling onCreate " + savedInstanceState);
         setContentView(R.layout.activity_read_later_main);
         // Load mappings once, so we don't have to look them up all the time
         categoryMappings = CategoryMapping.getCategoryMappings(this);
@@ -52,6 +60,7 @@ public final class ReadLaterMain extends ActionBarActivity {
         urlTextInput.setOnFocusChangeListener(autoCategoryInserter);
         descriptionTextInput.setOnFocusChangeListener((autoCategoryInserter));
 
+
         // Try to fill in the text fields if we come from a share intent.
         final Intent intent = this.getIntent();
         final String action = intent.getAction();
@@ -66,6 +75,14 @@ public final class ReadLaterMain extends ActionBarActivity {
             }
             String categories = getCategories(text);
             categoriesTextInput.setText(categories);
+
+        // Try to fill in the text fields from the saved state
+        } else  {
+            SharedPreferences pref = getPreferences(MODE_PRIVATE);
+            titleTextInput.setText(pref.getString(SAVED_TITLE_KEY, ""));
+            urlTextInput.setText(pref.getString(SAVED_URL_KEY, ""));
+            descriptionTextInput.setText(pref.getString(SAVED_DESCRIPTION_KEY, ""));
+            categoriesTextInput.setText(pref.getString(SAVED_CATEGORIES_KEY, ""));
         }
 
 
@@ -92,11 +109,26 @@ public final class ReadLaterMain extends ActionBarActivity {
                             public void run() {
                                 b.setEnabled(true);
                                 b.setText(getString(R.string.saveBookmarkButtonText));
+                                clearInputFields();
                             }
                         }
                 );
             }
         });
+        final Button clearButton = (Button) findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                clearInputFields();
+            }
+        });
+    }
+
+    private void clearInputFields() {
+        ((EditText) findViewById(R.id.bookmarkTitleInput)).setText("");
+        ((EditText) findViewById(R.id.bookmarkURLInput)).setText("");
+        ((EditText) findViewById(R.id.bookmarkDescriptionInput)).setText("");
+        ((EditText) findViewById(R.id.bookmarkCategoriesInput)).setText("");
     }
 
     /**
@@ -114,6 +146,24 @@ public final class ReadLaterMain extends ActionBarActivity {
             categories.add(Settings.getOwncloudDefaultCategory(this));
         }
         return Joiner.on(',').join(categories);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        final EditText titleTextInput = (EditText) findViewById(R.id.bookmarkTitleInput);
+        final EditText urlTextInput = (EditText) findViewById(R.id.bookmarkURLInput);
+        final EditText descriptionTextInput = (EditText) findViewById(R.id.bookmarkDescriptionInput);
+        final EditText categoriesTextInput = (EditText) findViewById(R.id.bookmarkCategoriesInput);
+
+
+        SharedPreferences pref = getPreferences(MODE_PRIVATE);
+        final SharedPreferences.Editor edit = pref.edit();
+        edit.putString(SAVED_TITLE_KEY, ActivityHelper.getNullCheckedText(titleTextInput));
+        edit.putString(SAVED_URL_KEY, ActivityHelper.getNullCheckedText(urlTextInput));
+        edit.putString(SAVED_DESCRIPTION_KEY, ActivityHelper.getNullCheckedText(descriptionTextInput));
+        edit.putString(SAVED_CATEGORIES_KEY, ActivityHelper.getNullCheckedText(categoriesTextInput));
+        edit.commit();
     }
 
     @Override
