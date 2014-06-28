@@ -90,5 +90,6 @@
         android:id="@+id/enableNotifications"
         android:layout_below="@+id/owncloudDefaultCategoryTextInput"
         android:layout_alignParentLeft="true"
-        android:checked="true"/>
+        android:checked="true"
+        android:textSize="18sp"/>
 </RelativeLayout>

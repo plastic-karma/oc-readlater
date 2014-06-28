@@ -5,5 +5,5 @@ TODO
   - delete bookmarks
   - edit bookmarks
 - Abstract communication to owncloud bookmark app, because maybe a real api will emerge at some point
-- Unittesting (seems like black magic in android) 
+- Unit testing (seems like black magic in android) 
 

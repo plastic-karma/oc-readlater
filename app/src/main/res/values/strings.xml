@@ -36,5 +36,6 @@
     <string name="buttonTextWhileSaving">saving…</string>
     <string name="clearBookmarkButton">clear</string>
     <string name="enableNotificationsCheckBox">enable notifications</string>
+    <string name="addBookmarkActivityTitle">Read Later</string>
 
 </resources>
