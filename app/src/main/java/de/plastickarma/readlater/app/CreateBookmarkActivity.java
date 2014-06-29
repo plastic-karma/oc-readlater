@@ -164,80 +164,8 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.action_save_bookmark) {
-
-            final View oldItemView = item.getActionView();
-
-            new OwncloudRequest(
-                    Settings.getOwncloudURL(this),
-                    Settings.getOwncloudUser(this),
-                    Settings.getOwncloudPassword(this)) {
-
-                @Override
-                protected void onBeforeExecute(final Context context) {
-                    item.setEnabled(false);
-                    item.setActionView(new ProgressBar(context));
-                    notifyIfEnabled(
-                            context,
-                            context.getString(R.string.savingBookmarkNotTitle),
-                            context.getString(R.string.savingBookmarkNotText),
-                            android.R.drawable.stat_sys_upload);
-                }
-
-                @Override
-                protected void onSuccess(final Context context, final String result) {
-                    item.setEnabled(true);
-                    item.setActionView(oldItemView);
-                    clearInputFields();
-                    notifyIfEnabled(
-                            context,
-                            context.getString(R.string.savingBookmarkNotTitle),
-                            context.getString(R.string.savingBookmarkDoneNotText),
-                            android.R.drawable.stat_sys_upload_done);
-                }
-
-                @Override
-                protected void onError(final Context context, final Exception e) {
-                    item.setEnabled(true);
-                    item.setActionView(oldItemView);
-                    notifyIfEnabled(
-                            context,
-                            context.getString(R.string.badResponseTitle),
-                            e.getMessage(),
-                            android.R.drawable.stat_notify_error);
-                    AlertDialog.Builder ab = new AlertDialog.Builder(context);
-                    ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(final DialogInterface dialog, final int which) {
-
-                        }
-                    });
-                    ab.setTitle(context.getString(R.string.savingBookmarkErrorText)).setMessage(e.getMessage());
-                    ab.create().show();
-                }
-
-                @Override
-                protected void modifyRequest(final Builders.Any.B requestBuilder) {
-                    final EditText titleTextInput = (EditText) findViewById(R.id.bookmarkTitleInput);
-                    final EditText urlTextInput = (EditText) findViewById(R.id.bookmarkURLInput);
-                    final EditText descriptionTextInput = (EditText) findViewById(R.id.bookmarkDescriptionInput);
-                    final EditText categoriesTextInput = (EditText) findViewById(R.id.bookmarkCategoriesInput);
-
-                    final Bookmark bookmark = new Bookmark(
-                            correctURLifNecessary(ActivityHelper.getNullCheckedText(urlTextInput)),
-                            ActivityHelper.getNullCheckedText(titleTextInput),
-                            ActivityHelper.getNullCheckedText(descriptionTextInput),
-                            ActivityHelper.getNullCheckedText(categoriesTextInput));
-
-                    requestBuilder
-                            .setBodyParameter("record_id", "")
-                            .setBodyParameter("description", bookmark.getDescription())
-                            .setBodyParameter("title", bookmark.getTitle())
-                            .setBodyParameter("url", bookmark.getUrl())
-                            .setBodyParameter("item[tags][]", bookmark.getCategories());
-                }
-
-
-            }. execute(this, EDIT_BM_LOCATION);
+            new AddBookmarkOwncloudRequest(item).execute(this, EDIT_BM_LOCATION);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -271,5 +199,87 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
                 .setContentText(message)
                 .setSmallIcon(icon)
                 .build();
+    }
+
+    /**
+     * Owncloud request to add a bookmark.
+     */
+    private class AddBookmarkOwncloudRequest extends OwncloudRequest {
+
+        private final MenuItem item;
+        private final View oldItemView;
+
+        public AddBookmarkOwncloudRequest(final MenuItem item) {
+            super(
+                Settings.getOwncloudURL(CreateBookmarkActivity.this),
+                Settings.getOwncloudUser(CreateBookmarkActivity.this),
+                    Settings.getOwncloudPassword(CreateBookmarkActivity.this));
+            this.item = item;
+            this.oldItemView = item.getActionView();
+        }
+
+        @Override
+        protected void onBeforeExecute(final Context context) {
+            item.setEnabled(false);
+            item.setActionView(new ProgressBar(context));
+            notifyIfEnabled(
+                    context,
+                    context.getString(R.string.savingBookmarkNotTitle),
+                    context.getString(R.string.savingBookmarkNotText),
+                    android.R.drawable.stat_sys_upload);
+        }
+
+        @Override
+        protected void onSuccess(final Context context, final String result) {
+            item.setEnabled(true);
+            item.setActionView(oldItemView);
+            clearInputFields();
+            notifyIfEnabled(
+                    context,
+                    context.getString(R.string.savingBookmarkNotTitle),
+                    context.getString(R.string.savingBookmarkDoneNotText),
+                    android.R.drawable.stat_sys_upload_done);
+        }
+
+        @Override
+        protected void onError(final Context context, final Exception e) {
+            item.setEnabled(true);
+            item.setActionView(oldItemView);
+            notifyIfEnabled(
+                    context,
+                    context.getString(R.string.badResponseTitle),
+                    e.getMessage(),
+                    android.R.drawable.stat_notify_error);
+            AlertDialog.Builder ab = new AlertDialog.Builder(context);
+            ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(final DialogInterface dialog, final int which) {
+
+                }
+            });
+            ab.setTitle(context.getString(R.string.savingBookmarkErrorText)).setMessage(e.getMessage());
+            ab.create().show();
+        }
+
+        @Override
+        protected void modifyRequest(final Builders.Any.B requestBuilder) {
+            final EditText titleTextInput = (EditText) findViewById(R.id.bookmarkTitleInput);
+            final EditText urlTextInput = (EditText) findViewById(R.id.bookmarkURLInput);
+            final EditText descriptionTextInput = (EditText) findViewById(R.id.bookmarkDescriptionInput);
+            final EditText categoriesTextInput = (EditText) findViewById(R.id.bookmarkCategoriesInput);
+
+            final Bookmark bookmark = new Bookmark(
+                    correctURLifNecessary(ActivityHelper.getNullCheckedText(urlTextInput)),
+                    ActivityHelper.getNullCheckedText(titleTextInput),
+                    ActivityHelper.getNullCheckedText(descriptionTextInput),
+                    ActivityHelper.getNullCheckedText(categoriesTextInput));
+
+            requestBuilder
+                    .setBodyParameter("record_id", "")
+                    .setBodyParameter("description", bookmark.getDescription())
+                    .setBodyParameter("title", bookmark.getTitle())
+                    .setBodyParameter("url", bookmark.getUrl())
+                    .setBodyParameter("item[tags][]", bookmark.getCategories());
+        }
     }
 }
