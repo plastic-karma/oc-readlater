@@ -1,7 +1,14 @@
 package de.plastickarma.readlater.app;
 
+import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -11,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import com.google.common.base.Joiner;
+import com.koushikdutta.ion.builder.Builders;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +34,9 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
     private static final String SAVED_URL_KEY = "savedURL";
     private static final String SAVED_DESCRIPTION_KEY = "savedDescription";
     private static final String SAVED_CATEGORIES_KEY = "savedCategories";
+
+    private static final String EDIT_BM_LOCATION =
+            "index.php/apps/bookmarks/ajax/editBookmark.php";
 
     private List<CategoryMapping> categoryMappings;
 
@@ -153,36 +164,112 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.action_save_bookmark) {
-            item.setEnabled(false);
-            final View oldItemView = item.getActionView();
-            item.setActionView(new ProgressBar(this));
-            final EditText titleTextInput = (EditText) findViewById(R.id.bookmarkTitleInput);
-            final EditText urlTextInput = (EditText) findViewById(R.id.bookmarkURLInput);
-            final EditText descriptionTextInput = (EditText) findViewById(R.id.bookmarkDescriptionInput);
-            final EditText categoriesTextInput = (EditText) findViewById(R.id.bookmarkCategoriesInput);
 
-            Bookmark bm = new Bookmark(
-                    ActivityHelper.getNullCheckedText(urlTextInput),
-                    ActivityHelper.getNullCheckedText(titleTextInput),
-                    ActivityHelper.getNullCheckedText(descriptionTextInput),
-                    ActivityHelper.getNullCheckedText(categoriesTextInput));
-            RemoteBookmarkCreator.createRemoteBookmark(
-                    this,
+            final View oldItemView = item.getActionView();
+
+            new OwncloudRequest(
                     Settings.getOwncloudURL(this),
                     Settings.getOwncloudUser(this),
-                    Settings.getOwncloudPassword(this),
-                    bm,
-                    Settings.notificationsAreEnabled(CreateBookmarkActivity.this),
-                    new Runnable() {
+                    Settings.getOwncloudPassword(this)) {
+
+                @Override
+                protected void onBeforeExecute(final Context context) {
+                    item.setEnabled(false);
+                    item.setActionView(new ProgressBar(context));
+                    notifyIfEnabled(
+                            context,
+                            context.getString(R.string.savingBookmarkNotTitle),
+                            context.getString(R.string.savingBookmarkNotText),
+                            android.R.drawable.stat_sys_upload);
+                }
+
+                @Override
+                protected void onSuccess(final Context context, final String result) {
+                    item.setEnabled(true);
+                    item.setActionView(oldItemView);
+                    clearInputFields();
+                    notifyIfEnabled(
+                            context,
+                            context.getString(R.string.savingBookmarkNotTitle),
+                            context.getString(R.string.savingBookmarkDoneNotText),
+                            android.R.drawable.stat_sys_upload_done);
+                }
+
+                @Override
+                protected void onError(final Context context, final Exception e) {
+                    item.setEnabled(true);
+                    item.setActionView(oldItemView);
+                    notifyIfEnabled(
+                            context,
+                            context.getString(R.string.badResponseTitle),
+                            e.getMessage(),
+                            android.R.drawable.stat_notify_error);
+                    AlertDialog.Builder ab = new AlertDialog.Builder(context);
+                    ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
-                        public void run() {
-                            item.setActionView(oldItemView);
-                            item.setEnabled(true);
-                            clearInputFields();
+                        public void onClick(final DialogInterface dialog, final int which) {
+
                         }
-                    }
-            );
+                    });
+                    ab.setTitle(context.getString(R.string.savingBookmarkErrorText)).setMessage(e.getMessage());
+                    ab.create().show();
+                }
+
+                @Override
+                protected void modifyRequest(final Builders.Any.B requestBuilder) {
+                    final EditText titleTextInput = (EditText) findViewById(R.id.bookmarkTitleInput);
+                    final EditText urlTextInput = (EditText) findViewById(R.id.bookmarkURLInput);
+                    final EditText descriptionTextInput = (EditText) findViewById(R.id.bookmarkDescriptionInput);
+                    final EditText categoriesTextInput = (EditText) findViewById(R.id.bookmarkCategoriesInput);
+
+                    final Bookmark bookmark = new Bookmark(
+                            correctURLifNecessary(ActivityHelper.getNullCheckedText(urlTextInput)),
+                            ActivityHelper.getNullCheckedText(titleTextInput),
+                            ActivityHelper.getNullCheckedText(descriptionTextInput),
+                            ActivityHelper.getNullCheckedText(categoriesTextInput));
+
+                    requestBuilder
+                            .setBodyParameter("record_id", "")
+                            .setBodyParameter("description", bookmark.getDescription())
+                            .setBodyParameter("title", bookmark.getTitle())
+                            .setBodyParameter("url", bookmark.getUrl())
+                            .setBodyParameter("item[tags][]", bookmark.getCategories());
+                }
+
+
+            }. execute(this, EDIT_BM_LOCATION);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private static void notifyIfEnabled(
+            final Context context,
+            final String title,
+            final String message,
+            final int icon) {
+        if (Settings.notificationsAreEnabled(context)) {
+            final NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(0, createNotification(context, title, message, icon));
+        }
+    }
+
+    private static String correctURLifNecessary(final String bookmark) {
+        if (bookmark.startsWith("http")) {
+            return bookmark;
+        } else {
+            return "http://" + bookmark;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private static Notification createNotification(
+            final Context context, final String title, final String message, final int icon) {
+        return new Notification.Builder(context)
+                .setAutoCancel(true)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setSmallIcon(icon)
+                .build();
     }
 }
