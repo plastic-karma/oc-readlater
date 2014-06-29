@@ -278,8 +278,11 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
                     .setBodyParameter("record_id", "")
                     .setBodyParameter("description", bookmark.getDescription())
                     .setBodyParameter("title", bookmark.getTitle())
-                    .setBodyParameter("url", bookmark.getUrl())
-                    .setBodyParameter("item[tags][]", bookmark.getCategories());
+                    .setBodyParameter("url", bookmark.getUrl());
+
+            for (String category : bookmark.getCategories().split(",")) {
+                requestBuilder.setBodyParameter("item[tags][]", category.trim());
+            }
         }
     }
 }
