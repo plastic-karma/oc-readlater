@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import com.google.common.base.Joiner;
 
 import java.util.HashSet;
@@ -124,7 +125,7 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
         final EditText descriptionTextInput = (EditText) findViewById(R.id.bookmarkDescriptionInput);
         final EditText categoriesTextInput = (EditText) findViewById(R.id.bookmarkCategoriesInput);
 
-
+        // Save what the user has typed so far
         SharedPreferences pref = getPreferences(MODE_PRIVATE);
         final SharedPreferences.Editor edit = pref.edit();
         edit.putString(SAVED_TITLE_KEY, ActivityHelper.getNullCheckedText(titleTextInput));
@@ -153,6 +154,8 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
             return true;
         } else if (id == R.id.action_save_bookmark) {
             item.setEnabled(false);
+            final View oldItemView = item.getActionView();
+            item.setActionView(new ProgressBar(this));
             final EditText titleTextInput = (EditText) findViewById(R.id.bookmarkTitleInput);
             final EditText urlTextInput = (EditText) findViewById(R.id.bookmarkURLInput);
             final EditText descriptionTextInput = (EditText) findViewById(R.id.bookmarkDescriptionInput);
@@ -173,6 +176,7 @@ public final class CreateBookmarkActivity extends ActionBarActivity {
                     new Runnable() {
                         @Override
                         public void run() {
+                            item.setActionView(oldItemView);
                             item.setEnabled(true);
                             clearInputFields();
                         }
